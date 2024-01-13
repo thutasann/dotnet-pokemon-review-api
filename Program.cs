@@ -1,4 +1,7 @@
 using dotnet_pokemon_review.Data;
+using dotnet_pokemon_review.Interfaces;
+using dotnet_pokemon_review.Middleware;
+using dotnet_pokemon_review.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +14,10 @@ builder.Services.AddDbContext<DataContext>(options => {
     options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")!);
 });
 
+builder.Services.AddScoped<IPokemonRepository, PokemonRepository>();
+
 var app = builder.Build();
+app.UseMiddleware<ResponseTimeMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

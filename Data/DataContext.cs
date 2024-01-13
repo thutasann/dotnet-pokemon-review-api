@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace dotnet_pokemon_review.Data
 {   
     /// <summary>
-    /// Data Context
+    /// Data Context for the Entire service
     /// </summary>
     public class DataContext : DbContext
     {
