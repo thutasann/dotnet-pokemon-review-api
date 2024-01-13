@@ -1,5 +1,8 @@
 namespace dotnet_pokemon_review.Models
 {
+    /// <summary>
+    /// Many-Many Between Pokemon and Owner
+    /// </summary>
     public class PokemonOwner
     {
         public int PokemonId { get; set; }
