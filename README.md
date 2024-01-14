@@ -19,6 +19,10 @@ Credit [Teddy Smith](https://github.com/teddysmithdev)
 - MySql.EntityFrameworkCore
 - Pomelo.EntityFrameworkCore.MySql
 - MySql.Data
+- AutoMapper
+- AutoMapper.Extensions.Microsoft.DependencyInjection
+- Microsoft.Extensions.Caching.StackExchangeRedis
+- Newtonsoft.Json
 
 ## Scripts
 

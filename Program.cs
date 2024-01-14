@@ -16,6 +16,10 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); // Auto
 builder.Services.AddDbContext<DataContext>(options => {
     options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")!);
 });
+builder.Services.AddStackExchangeRedisCache(redisOptions => { // Redis
+    string connection = builder.Configuration.GetConnectionString("Redis")!;
+    redisOptions.Configuration = connection;
+});
 
 builder.Services.AddScoped<IPokemonRepository, PokemonRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();

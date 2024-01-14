@@ -37,14 +37,14 @@ namespace dotnet_pokemon_review.Controllers
 
         [HttpGet("{categoryId:int}")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<CategoryDto>))]
-        public IActionResult GetCategory([FromRoute] int categoryId)
+        public async Task<IActionResult> GetCategory([FromRoute] int categoryId)
         {
             if(!_categoryRepository.CategoryExists(categoryId))
             {
                 return NotFound();
             }
 
-            var category = _mapper.Map<CategoryDto>(_categoryRepository.GetCategory(categoryId));
+            var category = await _categoryRepository.GetCategory(categoryId);
 
             if(!ModelState.IsValid)
             {

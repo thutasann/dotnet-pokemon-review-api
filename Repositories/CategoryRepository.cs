@@ -1,17 +1,24 @@
+using System.Text.Json.Serialization;
 using AutoMapper;
 using dotnet_pokemon_review.Data;
 using dotnet_pokemon_review.Interfaces;
 using dotnet_pokemon_review.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 
 namespace dotnet_pokemon_review.Repositories
 {
     public class CategoryRepository : ICategoryRepository
     {
         private readonly DataContext _context;
+        private readonly IDistributedCache _distributedCache;
 
-        public CategoryRepository(DataContext context)
+        public CategoryRepository(DataContext context, IDistributedCache distributedCache)
         {
             _context = context;
+            _distributedCache = distributedCache;
         }
 
         public bool CategoryExists(int categoryId)
@@ -24,9 +31,42 @@ namespace dotnet_pokemon_review.Repositories
             return _context.Categories.ToList();
         }
 
-        public Category? GetCategory(int id)
+        public async Task<Category?> GetCategory(int id)
         {
-            return _context.Categories.Where(e => e.Id == id).FirstOrDefault();
+            string key = $"category-{id}";
+            string? cachedCategory = await _distributedCache.GetStringAsync(
+                key
+            );
+
+            Console.WriteLine(string.IsNullOrEmpty(cachedCategory));
+            
+            Category? category;
+            if(string.IsNullOrEmpty(cachedCategory))
+            {
+                category = await _context.Categories.Where(e => e.Id == id).FirstOrDefaultAsync();
+
+                if(category is null)
+                {
+                    return category;
+                }
+                await _distributedCache.SetStringAsync(
+                    key,
+                    JsonConvert.SerializeObject(category)
+                );
+
+                return category;
+            }
+
+            category = JsonConvert.DeserializeObject<Category>(
+                cachedCategory,
+                new JsonSerializerSettings
+                {
+                    ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
+                }
+            );
+
+            return category;
+
         }
 
         public ICollection<Pokemon> GetPokemonByCategory(int categoryId)
