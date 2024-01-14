@@ -130,6 +130,9 @@ namespace dotnetpokemonreview.Migrations
                     b.Property<int>("PokemonId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
                     b.Property<int>("ReviewerId")
                         .HasColumnType("int");
 
