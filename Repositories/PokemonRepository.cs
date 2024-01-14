@@ -19,14 +19,14 @@ namespace dotnet_pokemon_review.Repositories
             _logger = logger;
         }
 
-        public Pokemon GetPokemon(int id)
+        public Pokemon? GetPokemon(int id)
         {
-            return _context.Pokemons.Where(p => p.Id == id).FirstOrDefault()!;
+            return _context.Pokemons.Where(p => p.Id == id).FirstOrDefault();
         }
 
-        public Pokemon GetPokemon(string name)
+        public Pokemon? GetPokemon(string name)
         {
-           return _context.Pokemons.Where(p => p.Name == name).FirstOrDefault()!;
+           return _context.Pokemons.Where(p => p.Name == name).FirstOrDefault();
         }
 
         public decimal GetPokemonRating(int pokeId)

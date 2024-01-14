@@ -7,7 +7,9 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => {
+    options.Filters.Add(typeof(ModelStateValidatorFilter));
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); // AutoMapper
@@ -16,6 +18,8 @@ builder.Services.AddDbContext<DataContext>(options => {
 });
 
 builder.Services.AddScoped<IPokemonRepository, PokemonRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICountryRepository, CountryRespository>();
 
 var app = builder.Build();
 app.UseMiddleware<ResponseTimeMiddleware>();

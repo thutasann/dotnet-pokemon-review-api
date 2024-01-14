@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace dotnet_pokemon_review.Middleware
 {
     /// <summary>
-    /// Custom Response Format
+    /// Custom Response Format for ResponseType
     /// </summary>
     public class CustomResponseFormatAttribute : ActionFilterAttribute
     {

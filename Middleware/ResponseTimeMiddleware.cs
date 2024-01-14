@@ -2,6 +2,9 @@ using System.Diagnostics;
 
 namespace dotnet_pokemon_review.Middleware
 {
+    /// <summary>
+    /// API response time Middleware
+    /// </summary>
     public class ResponseTimeMiddleware
     {
         private readonly RequestDelegate _next;
