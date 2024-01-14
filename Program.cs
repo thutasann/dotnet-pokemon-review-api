@@ -7,16 +7,19 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers(options => {
+builder.Services.AddControllers(options =>
+{
     options.Filters.Add(typeof(ModelStateValidatorFilter));
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); // AutoMapper
-builder.Services.AddDbContext<DataContext>(options => {
+builder.Services.AddDbContext<DataContext>(options =>
+{
     options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")!);
 });
-builder.Services.AddStackExchangeRedisCache(redisOptions => { // Redis
+builder.Services.AddStackExchangeRedisCache(redisOptions =>
+{ // Redis
     string connection = builder.Configuration.GetConnectionString("Redis")!;
     redisOptions.Configuration = connection;
 });
@@ -24,6 +27,7 @@ builder.Services.AddStackExchangeRedisCache(redisOptions => { // Redis
 builder.Services.AddScoped<IPokemonRepository, PokemonRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICountryRepository, CountryRespository>();
+builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
 
 var app = builder.Build();
 app.UseMiddleware<ResponseTimeMiddleware>();
