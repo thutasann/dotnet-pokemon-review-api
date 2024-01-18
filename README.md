@@ -10,7 +10,7 @@ This is the mini dotnet-core api development practice project.
 
 ## UML Diagram
 
-![UML](examples/UML.png)
+![UML](examples/UML.png) <br>
 Credit [Teddy Smith](https://github.com/teddysmithdev)
 
 ## NuGet Packags
@@ -54,4 +54,20 @@ dotnet ef migrations add init
 
 ```bash
 dotnet ef database update
+```
+
+### Husky Installation
+
+[Installation Doc](https://alirezanet.github.io/Husky.Net/guide/getting-started.html#installation)
+
+```
+dotnet new tool-manifest
+```
+
+```
+dotnet tool install Husky
+```
+
+```
+dotnet husky install
 ```
