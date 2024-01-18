@@ -2,7 +2,6 @@ using AutoMapper;
 using dotnet_pokemon_review.Dto;
 using dotnet_pokemon_review.Interfaces;
 using dotnet_pokemon_review.Middleware;
-using dotnet_pokemon_review.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_pokemon_review.Controllers
@@ -27,7 +26,7 @@ namespace dotnet_pokemon_review.Controllers
         {
             var countries = _mapper.Map<List<CountryDto>>(_countryRepository.GetCountries());
 
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -40,14 +39,14 @@ namespace dotnet_pokemon_review.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetCountry([FromRoute] int countryId)
         {
-            if(!_countryRepository.CountryExists(countryId))
+            if (!_countryRepository.CountryExists(countryId))
             {
                 return NotFound();
             }
 
             var country = _mapper.Map<CountryDto>(_countryRepository.GetCountry(countryId));
 
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -62,7 +61,7 @@ namespace dotnet_pokemon_review.Controllers
         {
             var country = _mapper.Map<CountryDto>(_countryRepository.GetCountryByOwner(ownerId));
 
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
