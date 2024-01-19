@@ -41,5 +41,17 @@ namespace dotnet_pokemon_review.Repositories
         {
             return _context.Owners.Where(c => c.Country.Id == countryId).ToList();
         }
+
+        public bool CreateCountry(Country country)
+        {
+            _context.Add(country);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0;
+        }
     }
 }

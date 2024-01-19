@@ -13,10 +13,13 @@ namespace dotnet_pokemon_review.Controllers
     public class OwnerController : ControllerBase
     {
         private readonly IOwnerRepository _ownerRepository;
+        private readonly ICountryRepository _countryRepository;
         private readonly IMapper _mapper;
-        public OwnerController(IOwnerRepository ownerRepository, IMapper mapper)
+
+        public OwnerController(IOwnerRepository ownerRepository, ICountryRepository countryRepository, IMapper mapper)
         {
             _ownerRepository = ownerRepository;
+            _countryRepository = countryRepository;
             _mapper = mapper;
         }
 
@@ -72,6 +75,37 @@ namespace dotnet_pokemon_review.Controllers
             }
 
             return Ok(pokemons);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateOwner([FromQuery] int countryId, [FromBody] OwnerDto createOwner)
+        {
+            if (createOwner == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var owner = _ownerRepository.GetOwners()
+                .Where(o => o.Name.Trim().ToUpper() == createOwner.Name.TrimEnd().ToUpper()).FirstOrDefault();
+
+            if (owner != null)
+            {
+                ModelState.AddModelError("", "Owner Already Exists");
+                return StatusCode(422, ModelState);
+            }
+
+            var ownerMap = _mapper.Map<Owner>(createOwner);
+            ownerMap.Country = _countryRepository.GetCountry(countryId)!;
+
+            if (!_ownerRepository.CreateOwner(ownerMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while Saving!");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully Saved");
         }
     }
 }

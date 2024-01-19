@@ -36,5 +36,17 @@ namespace dotnet_pokemon_review.Repositories
         {
             return _context.Owners.Any(o => o.Id == ownerId);
         }
+
+        public bool CreateOwner(Owner owner)
+        {
+            _context.Add(owner);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0;
+        }
     }
 }

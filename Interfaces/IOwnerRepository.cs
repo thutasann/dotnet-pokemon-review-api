@@ -8,5 +8,7 @@ namespace dotnet_pokemon_review.Interfaces
         ICollection<Owner> GetOwnerOfAPokeMon(int pokeId);
         ICollection<Pokemon> GetPokemonByOwner(int ownerId);
         bool OwnerExists(int ownerId);
+        bool CreateOwner(Owner owner);
+        bool Save();
     }
 }

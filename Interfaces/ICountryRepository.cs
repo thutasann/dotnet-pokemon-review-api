@@ -9,5 +9,7 @@ namespace dotnet_pokemon_review.Interfaces
         Country? GetCountryByOwner(int ownerId);
         ICollection<Owner> GetOwnersFromACountry(int countryId);
         bool CountryExists(int id);
+        bool CreateCountry(Country country);
+        bool Save();
     }
 }
