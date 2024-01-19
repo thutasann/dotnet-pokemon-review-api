@@ -1,11 +1,8 @@
-using System.Text.Json.Serialization;
-using AutoMapper;
 using dotnet_pokemon_review.Data;
 using dotnet_pokemon_review.Interfaces;
 using dotnet_pokemon_review.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 
 namespace dotnet_pokemon_review.Repositories
@@ -39,13 +36,13 @@ namespace dotnet_pokemon_review.Repositories
             );
 
             Console.WriteLine(string.IsNullOrEmpty(cachedCategory));
-            
+
             Category? category;
-            if(string.IsNullOrEmpty(cachedCategory))
+            if (string.IsNullOrEmpty(cachedCategory))
             {
                 category = await _context.Categories.Where(e => e.Id == id).FirstOrDefaultAsync();
 
-                if(category is null)
+                if (category is null)
                 {
                     return category;
                 }
@@ -72,6 +69,18 @@ namespace dotnet_pokemon_review.Repositories
         public ICollection<Pokemon> GetPokemonByCategory(int categoryId)
         {
             return _context.PokemonCategories.Where(pc => pc.CategoryId == categoryId).Select(c => c.Pokemon).ToList();
+        }
+
+        public bool CreateCategory(Category category)
+        {
+            _context.Add(category);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0;
         }
     }
 }

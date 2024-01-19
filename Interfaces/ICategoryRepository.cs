@@ -14,5 +14,7 @@ namespace dotnet_pokemon_review.Interfaces
         Task<Category?> GetCategory(int id);
         ICollection<Pokemon> GetPokemonByCategory(int categoryId);
         bool CategoryExists(int categoryId);
+        bool CreateCategory(Category category);
+        bool Save();
     }
 }

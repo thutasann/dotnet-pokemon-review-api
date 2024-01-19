@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using dotnet_pokemon_review.Data;
 using dotnet_pokemon_review.Interfaces;
 using dotnet_pokemon_review.Models;
@@ -26,7 +22,7 @@ namespace dotnet_pokemon_review.Repositories
 
         public Pokemon? GetPokemon(string name)
         {
-           return _context.Pokemons.Where(p => p.Name == name).FirstOrDefault();
+            return _context.Pokemons.Where(p => p.Name == name).FirstOrDefault();
         }
 
         public decimal GetPokemonRating(int pokeId)
@@ -47,6 +43,37 @@ namespace dotnet_pokemon_review.Repositories
         public bool PokemonExists(int pokeId)
         {
             return _context.Pokemons.Any(p => p.Id == pokeId);
+        }
+
+        public bool CreatePokemon(int ownerId, int categoryId, Pokemon pokemon)
+        {
+            var pokemonOwnerEntity = _context.Owners.Where(o => o.Id == ownerId).FirstOrDefault();
+            var category = _context.Categories.Where(c => c.Id == categoryId).FirstOrDefault();
+
+            var pokemonOwner = new PokemonOwner()
+            {
+                Owner = pokemonOwnerEntity!,
+                Pokemon = pokemon
+            };
+
+            _context.Add(pokemonOwner);
+
+            var pokemonCategory = new PokemonCategory()
+            {
+                Pokemon = pokemon,
+                Category = category!
+            };
+
+            _context.Add(pokemonCategory);
+            _context.Add(pokemon);
+
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0;
         }
     }
 }
