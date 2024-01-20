@@ -26,8 +26,8 @@ namespace dotnet_pokemon_review.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<PokemonDto>))]
         public IActionResult GetPokemons()
         {
-            var pokemons =  _mapper.Map<List<PokemonDto>>(_pokemonRepository.GetPokemons());
-            if(!ModelState.IsValid)
+            var pokemons = _mapper.Map<List<PokemonDto>>(_pokemonRepository.GetPokemons());
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -39,14 +39,14 @@ namespace dotnet_pokemon_review.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetPokemon([FromRoute] int pokeId)
         {
-            if(!_pokemonRepository.PokemonExists(pokeId))
+            if (!_pokemonRepository.PokemonExists(pokeId))
             {
                 return NotFound();
             }
 
             var pokemon = _mapper.Map<PokemonDto>(_pokemonRepository.GetPokemon(pokeId));
 
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -59,18 +59,48 @@ namespace dotnet_pokemon_review.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetPokemonRating([FromRoute] int pokeId)
         {
-            if(!_pokemonRepository.PokemonExists(pokeId))
+            if (!_pokemonRepository.PokemonExists(pokeId))
             {
                 return NotFound();
             }
             var rating = _pokemonRepository.GetPokemonRating(pokeId);
 
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
             return Ok(rating);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreatePokemon([FromQuery] int ownerId, [FromQuery] int cateId, PokemonDto createPokemon)
+        {
+            if (createPokemon == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var pokemons = _pokemonRepository.GetPokemons()
+                .Where(p => p.Name.Trim().ToUpper() == createPokemon.Name.TrimEnd().ToUpper())
+                .FirstOrDefault();
+
+            if (pokemons != null)
+            {
+                ModelState.AddModelError("", "Pokemon already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            var pokemonMap = _mapper.Map<Pokemon>(createPokemon);
+
+            if (!_pokemonRepository.CreatePokemon(ownerId, cateId, pokemonMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while Saving!");
+                return StatusCode(500, ModelState);
+            }
+            return Ok("Pokemon Saved Successfully");
         }
     }
 }

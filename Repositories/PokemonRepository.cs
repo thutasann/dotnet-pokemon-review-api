@@ -60,11 +60,12 @@ namespace dotnet_pokemon_review.Repositories
 
             var pokemonCategory = new PokemonCategory()
             {
-                Pokemon = pokemon,
-                Category = category!
+                Category = category!,
+                Pokemon = pokemon
             };
 
             _context.Add(pokemonCategory);
+
             _context.Add(pokemon);
 
             return Save();

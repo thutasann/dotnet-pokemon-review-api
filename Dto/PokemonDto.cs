@@ -1,5 +1,3 @@
-using dotnet_pokemon_review.Models;
-
 namespace dotnet_pokemon_review.Dto
 {
     public class PokemonDto
