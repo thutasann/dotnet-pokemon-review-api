@@ -1,6 +1,7 @@
 using AutoMapper;
 using dotnet_pokemon_review.Dto;
 using dotnet_pokemon_review.Middleware;
+using dotnet_pokemon_review.Models;
 using dotnet_pokemon_review.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -70,5 +71,37 @@ namespace dotnet_pokemon_review.Controllers
 
             return Ok(reviews);
         }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateReviewer([FromBody] ReviewerDto createReviewer)
+        {
+            if (createReviewer == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var reviewer = _reviewerRepository.GetReviewers()
+                .Where(r => r.FirstName.Trim().ToUpper() == createReviewer.FirstName.TrimEnd().ToUpper())
+                .FirstOrDefault();
+
+            if (reviewer != null)
+            {
+                ModelState.AddModelError("", "Reviewer already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            var reviewerMap = _mapper.Map<Reviewer>(createReviewer);
+
+            if (!_reviewerRepository.CreateReviewer(reviewerMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving!");
+                return StatusCode(500, ModelState);
+            }
+            return Ok("Successfully saved");
+
+        }
+
     }
 }
