@@ -1,4 +1,5 @@
 using dotnet_pokemon_review.Models;
+
 namespace dotnet_pokemon_review.Interfaces
 {
     public interface IOwnerRepository
@@ -10,6 +11,7 @@ namespace dotnet_pokemon_review.Interfaces
         bool OwnerExists(int ownerId);
         bool CreateOwner(Owner owner);
         bool UpdateOwner(Owner owner);
+        bool DeleteOwner(Owner owner);
         bool Save();
     }
 }

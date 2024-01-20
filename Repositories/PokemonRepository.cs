@@ -83,5 +83,10 @@ namespace dotnet_pokemon_review.Repositories
             return Save();
         }
 
+        public bool DeletePokemon(Pokemon pokemon)
+        {
+            _context.Remove(pokemon);
+            return Save();
+        }
     }
 }

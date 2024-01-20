@@ -10,6 +10,8 @@ namespace dotnet_pokemon_review.Interfaces
         bool ReviewExists(int reviewId);
         bool CreateReview(Review review);
         bool UpdateReview(Review review);
+        bool DeleteReviews(List<Review> reviews);
+        bool DeleteReview(Review review);
         bool Save();
     }
 }
