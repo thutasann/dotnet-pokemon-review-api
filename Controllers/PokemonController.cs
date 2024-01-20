@@ -13,12 +13,14 @@ namespace dotnet_pokemon_review.Controllers
     public class PokemonController : ControllerBase
     {
         private readonly IPokemonRepository _pokemonRepository;
+        private readonly IReviewRepository _reviewRepository;
         private readonly IMapper _mapper;
 
 
-        public PokemonController(IPokemonRepository pokemonRepository, IMapper mapper)
+        public PokemonController(IPokemonRepository pokemonRepository, IReviewRepository reviewRepository, IMapper mapper)
         {
             _pokemonRepository = pokemonRepository;
+            _reviewRepository = reviewRepository;
             _mapper = mapper;
         }
 
@@ -101,6 +103,49 @@ namespace dotnet_pokemon_review.Controllers
                 return StatusCode(500, ModelState);
             }
             return Ok("Pokemon Saved Successfully");
+        }
+
+        [HttpPut]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpatePokemon(
+            [FromQuery] int pokeId,
+            [FromQuery] int ownerId,
+            [FromQuery] int cateId,
+            [FromBody] PokemonDto updatePokemon
+        )
+        {
+            if (updatePokemon == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (pokeId != updatePokemon.Id)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_pokemonRepository.PokemonExists(pokeId))
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var pokeMap = _mapper.Map<Pokemon>(updatePokemon);
+
+            if (!_pokemonRepository.UpdatePokemon(ownerId, cateId, pokeMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while updating");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+
         }
     }
 }
