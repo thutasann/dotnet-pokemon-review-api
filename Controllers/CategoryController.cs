@@ -140,5 +140,32 @@ namespace dotnet_pokemon_review.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{categoryId:int}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteCategory([FromRoute] int categoryId)
+        {
+            if (!_categoryRepository.CategoryExists(categoryId))
+            {
+                return NotFound();
+            }
+
+            var categoryToDelete = _categoryRepository.GetCategoryNonAsync(categoryId);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_categoryRepository.DeleteCategory(categoryToDelete!))
+            {
+                ModelState.AddModelError("", "Something went wrong in deleting Cateogry");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
     }
 }

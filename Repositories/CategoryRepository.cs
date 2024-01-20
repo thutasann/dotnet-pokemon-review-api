@@ -66,6 +66,12 @@ namespace dotnet_pokemon_review.Repositories
 
         }
 
+        public Category? GetCategoryNonAsync(int id)
+        {
+            var category = _context.Categories.Where(e => e.Id == id).FirstOrDefault();
+            return category;
+        }
+
         public ICollection<Pokemon> GetPokemonByCategory(int categoryId)
         {
             return _context.PokemonCategories.Where(pc => pc.CategoryId == categoryId).Select(c => c.Pokemon).ToList();
@@ -88,5 +94,13 @@ namespace dotnet_pokemon_review.Repositories
             _context.Update(category);
             return Save();
         }
+
+        public bool DeleteCategory(Category category)
+        {
+            _context.Remove(category);
+            return Save();
+        }
+
+
     }
 }
