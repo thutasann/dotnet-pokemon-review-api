@@ -100,7 +100,43 @@ namespace dotnet_pokemon_review.Controllers
                 return StatusCode(500, ModelState);
             }
             return Ok("Successfully saved");
+        }
 
+        [HttpPut("{reviewerId:int}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateReviewer([FromRoute] int reviewerId, ReviewerDto updateReviewer)
+        {
+            if (updateReviewer == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (reviewerId != updateReviewer.Id)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_reviewerRepository.ReviewerExists(reviewerId))
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var reviewerMap = _mapper.Map<Reviewer>(updateReviewer);
+
+            if (!_reviewerRepository.UpdateReviewer(reviewerMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while updating");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
         }
 
     }
