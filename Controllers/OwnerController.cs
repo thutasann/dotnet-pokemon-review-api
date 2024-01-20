@@ -1,3 +1,4 @@
+using System.Diagnostics.Metrics;
 using AutoMapper;
 using dotnet_pokemon_review.Dto;
 using dotnet_pokemon_review.Interfaces;
@@ -106,6 +107,43 @@ namespace dotnet_pokemon_review.Controllers
             }
 
             return Ok("Successfully Saved");
+        }
+
+        [HttpPut("{ownerId:int}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateOwner([FromRoute] int ownerId, [FromBody] OwnerDto updateOwner)
+        {
+            if (updateOwner == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (ownerId != updateOwner.Id)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_ownerRepository.OwnerExists(ownerId))
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var ownerMap = _mapper.Map<Owner>(updateOwner);
+
+            if (!_ownerRepository.UpdateOwner(ownerMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while updating");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
         }
     }
 }
