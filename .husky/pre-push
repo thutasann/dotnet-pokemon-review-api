@@ -2,3 +2,5 @@
 . "$(dirname "$0")/_/husky.sh"
 
 dotnet build --no-restore
+
+dotnet test --no-build --verbosity normal
